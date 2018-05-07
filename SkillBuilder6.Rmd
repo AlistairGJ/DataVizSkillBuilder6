@@ -5,6 +5,12 @@ author: "Alistair Grevis-James s3644119"
 output: html_notebook
 ---
 
+
+Complete the following module skill builders (Submit your solutions as a knitted RMarkdown report via Canvas) before the deadlines in order to obtain a participation mark (1%). The skill builders aim to help develop your coding, conceptual understanding and prepare you for the exam. Answers will become available following the deadline. Working together in groups is encouraged, but please don’t give away the answers to other students who haven’t done the work (they won’t be learning anything!). These skill builders are designed to aid your learning.
+
+
+
+
 #### Loading the Packages
 ```{r Packages}
 library(ggplot2)
@@ -18,36 +24,64 @@ library(Hmisc)
 library(lmtest)
 library(ggmosaic)
 library(ggridges)
+
+library(ggplot2) #Required
+library(dplyr) #Data wrangling
+library(tidyr) #Data wrangling
+library(rgeos) #Mapping
+library(maptools) #Mapping
+library(ggmap) #Mapping
+library(broom) #Mapping
 ```
 
-#### Defining the Variables
-* "Diamonds.csv" was added to local folder for addition to the RStudio IDE.
-```{r Defining the Variables}
-Bicycle <- read.csv("Bicycle.csv")
-Bicycle$NB_TRAFFIC_SURVEY<-as.factor(Bicycle$NB_TRAFFIC_SURVEY)
-Bicycle$day<- factor(Bicycle$day, levels=c('Sun','Mon','Tue','Wed','Thu','Fri','Sat'),ordered=TRUE)
-Bicycle$weekend[Bicycle$weekend==TRUE]<-"Weekend"
-Bicycle$weekend[Bicycle$weekend==FALSE]<-"Weekday"
-Bicycle$weekend<-as.factor(Bicycle$weekend)
-Bicycle$Quarter<-factor(Bicycle$Quarter,levels=c(1,2,3,4),
-    labels=c("1st Quarter","2nd Quarter","3rd Quarter", "4th Quarter"),
-    ordered = TRUE)
-```
+#### Data
 
-* Check the import
-```{r}
-str(Bicycle)
-```
+The following exercises will be based on the lga_profiles_data_2011_pt1.csv dataset, introduced in Module 6.
 
 ```{r}
-head(Bicycle, n = 5)
+lga_profiles_data_2011_pt1 <- read.csv("data/lga_profiles_data_2011_pt1.csv")
+```
+
+#### Exercise 1
+
+Create a choropleth map in Carto using the lga_profiles_data_2011_pt1 dataset covered in the Module 6 notes, but this time, look at a different variable that you find interesting. This will require you to sign-up for a Carto account if you haven’t already done so. Publish the map, add a title, and paste the link to the published plot in an RMarkdown report. Submit this link along with a solution to Exercise 2 below.
+
+```{r}
+# Code!!!
+```
+
+#### Exercise 2
+
+Now recreate the choropleth map in Exercise 1 using ggplot2. Submit a knitted RMarkdown report to Canvas showing the link from Exercise 1 and the code and output from Exercise 2.
+
+```{r}
+# Example
+
+vic.lga.shp <- readShapeSpatial("data/vmlite_lga_cm/vmlite_lga_cm.shp")
+lga_profiles_data_2011_pt1 <- read.csv("data/lga_profiles_data_2011_pt1.csv")
+lga.shp.f <- tidy(vic.lga.shp, region = "lga_name")
+lga.shp.f$lga_name <-lga.shp.f$id
+merge.lga.profiles<-merge(lga.shp.f, lga_profiles_data_2011_pt1, 
+                          by="lga_name", all.x=TRUE)
+choro.data.frame<-merge.lga.profiles[order(merge.lga.profiles$order), ] 
+p1 <- ggplot(data = choro.data.frame,
+             aes(x = long, y = lat, group = group, 
+                 fill = low_english_proficiency)) +
+  
+geom_polygon(color = "black", size = 0.25) + 
+  coord_map() +
+  scale_fill_distiller(name = "Proportion of Population",
+                        guide = "legend",
+                    palette = "YlOrRd", direction = 1) +
+  theme_nothing(legend = TRUE) +
+  labs(title="Proportion of LGA Self-identified as low in English Proficiency")
+p1
 ```
 
 ```{r}
 tail(Bicycle, n = 5)
 ```
 
-* Check summary statistics
 ```{r}
 summary(Bicycle)
 ```
@@ -61,13 +95,6 @@ colnames(Bicycle)
 # Check how many UNIQUE locations there are ("DS_LOCATION")
 unique(Bicycle$DS_LOCATION)
 ```
-
-# For ONE location, show traffic over a year by month
-
-#### Challenge - Univariate and Bivariate Data Visualisation
-
-Using the Bicycle.csv dataset, select two variables that you expect to be related. Visualise the relationship between these two variables and then supplment this visualisation with two univariate data visualisations for each variable considered. These visualisations must be juxtaposed.
-
 
 ```{r, include=TRUE}
 # The first plot

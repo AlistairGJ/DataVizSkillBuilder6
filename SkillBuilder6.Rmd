@@ -1,0 +1,138 @@
+---
+title: "MATH2270 Module 5"
+subtitle: "Skill Builder - Bicycle Dataset"
+author: "Alistair Grevis-James s3644119"
+output: html_notebook
+---
+
+#### Loading the Packages
+```{r Packages}
+library(ggplot2)
+library(dplyr)
+library(cowplot)
+theme_set(theme_gray())
+library(vcd)
+library(GGally)
+library(tidyr)
+library(Hmisc)
+library(lmtest)
+library(ggmosaic)
+library(ggridges)
+```
+
+#### Defining the Variables
+* "Diamonds.csv" was added to local folder for addition to the RStudio IDE.
+```{r Defining the Variables}
+Bicycle <- read.csv("Bicycle.csv")
+Bicycle$NB_TRAFFIC_SURVEY<-as.factor(Bicycle$NB_TRAFFIC_SURVEY)
+Bicycle$day<- factor(Bicycle$day, levels=c('Sun','Mon','Tue','Wed','Thu','Fri','Sat'),ordered=TRUE)
+Bicycle$weekend[Bicycle$weekend==TRUE]<-"Weekend"
+Bicycle$weekend[Bicycle$weekend==FALSE]<-"Weekday"
+Bicycle$weekend<-as.factor(Bicycle$weekend)
+Bicycle$Quarter<-factor(Bicycle$Quarter,levels=c(1,2,3,4),
+    labels=c("1st Quarter","2nd Quarter","3rd Quarter", "4th Quarter"),
+    ordered = TRUE)
+```
+
+* Check the import
+```{r}
+str(Bicycle)
+```
+
+```{r}
+head(Bicycle, n = 5)
+```
+
+```{r}
+tail(Bicycle, n = 5)
+```
+
+* Check summary statistics
+```{r}
+summary(Bicycle)
+```
+
+```{r}
+# Check the column names
+colnames(Bicycle)
+```
+
+```{r}
+# Check how many UNIQUE locations there are ("DS_LOCATION")
+unique(Bicycle$DS_LOCATION)
+```
+
+# For ONE location, show traffic over a year by month
+
+#### Challenge - Univariate and Bivariate Data Visualisation
+
+Using the Bicycle.csv dataset, select two variables that you expect to be related. Visualise the relationship between these two variables and then supplment this visualisation with two univariate data visualisations for each variable considered. These visualisations must be juxtaposed.
+
+
+```{r, include=TRUE}
+# The first plot
+ggplot(data = Bicycle, aes(x=NB_YEAR, y=CT_VOLUME_24HOUR, group=NB_YEAR)) +
+  geom_col() +
+    labs(title="Plot 1: Plot of 24 Hour Bike Volume vs Year", subtitle="Geom_col used for this Exploratory Analysis")
+```
+
+```{r}
+ggplot(data = Bicycle[Bicycle$DS_LOCATION == "(BIKE LANE)FLEMINGTON RD NW BD 10M SE OF DRYBURGH ST",], aes(x=NB_YEAR, y=CT_VOLUME_24HOUR, group=NB_YEAR)) +
+  geom_col() +
+    labs(title="Plot 1: Plot of 24 Hour Bike Volume vs Year", subtitle="Geom_col used for this Exploratory Analysis")
+```
+
+```{r}
+p2 <- ggplot(Bicycle, aes(x = CT_VOLUME_24HOUR)) 
+p2 + geom_histogram() + facet_wrap(~DS_LOCATION, scales = "free")
+```
+
+
+```{r}
+ggplot(data = Bicycle, aes(x = CT_VOLUME_24HOUR, y = NB_YEAR)) + 
+  geom_density_ridges(alpha = .8, color = "white")
+  
+  geom_density(position = "stack", adjust = 1/10)
+
+ggNew <- ggplot(data = censusVizNew, aes(x=Number, y=Engagement, fill = Gender))
+ggNew + geom_density_ridges(alpha = .8, color = "white") + 
+  coord_cartesian(xlim = c(0, 750000)) + 
+  theme_ridges(grid = FALSE) + 
+  labs(title="Distribution Plots", 
+       subtitle="City Mileage vs Class: Each dot represents 1 row in source data",
+       caption="Source: Census 2016",
+       x="Distribution",
+       y="Engagement")
+
+
+```
+
+
+In the case of the Plot 2, Cut 'Ideal' is associated with the greatest rise in price, as compared to the other cut values.
+
+```{r, include=TRUE}
+ggplot(data = Diamonds, aes(x=carat, y=price, colour=cut)) +
+  geom_point() +
+    labs(title="Plot 2: Scatter Plot of Price versus Carat", subtitle="Colour of points mapped by Cut") 
+```
+
+In the case of the Plot 3, Color 'D' is associated with the greatest rise in price, as compared to the other color values.
+
+```{r, include=TRUE}
+ggplot(data = Diamonds, aes(x=carat, y=price, colour=color)) +
+  geom_point() +
+    labs(title="Plot 3: Scatter Plot of Price versus Carat", subtitle="Colour of points mapped by Color") 
+```
+
+Overall, a diamond with clarity equal to IF, cut equal to Ideal and color equal to D would have the greatest value per unit of carat.
+
+
+
+
+
+
+
+
+
+
+

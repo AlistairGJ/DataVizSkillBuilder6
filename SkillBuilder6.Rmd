@@ -1,30 +1,12 @@
 ---
-title: "MATH2270 Module 5"
-subtitle: "Skill Builder - Bicycle Dataset"
+title: "MATH2270 Module 6"
+subtitle: "Skill Builder"
 author: "Alistair Grevis-James s3644119"
 output: html_notebook
 ---
 
-
-Complete the following module skill builders (Submit your solutions as a knitted RMarkdown report via Canvas) before the deadlines in order to obtain a participation mark (1%). The skill builders aim to help develop your coding, conceptual understanding and prepare you for the exam. Answers will become available following the deadline. Working together in groups is encouraged, but please don’t give away the answers to other students who haven’t done the work (they won’t be learning anything!). These skill builders are designed to aid your learning.
-
-
-
-
 #### Loading the Packages
 ```{r Packages}
-library(ggplot2)
-library(dplyr)
-library(cowplot)
-theme_set(theme_gray())
-library(vcd)
-library(GGally)
-library(tidyr)
-library(Hmisc)
-library(lmtest)
-library(ggmosaic)
-library(ggridges)
-
 library(ggplot2) #Required
 library(dplyr) #Data wrangling
 library(tidyr) #Data wrangling
@@ -39,26 +21,23 @@ library(broom) #Mapping
 The following exercises will be based on the lga_profiles_data_2011_pt1.csv dataset, introduced in Module 6.
 
 ```{r}
-lga_profiles_data_2011_pt1 <- read.csv("data/lga_profiles_data_2011_pt1.csv")
+lga_profiles_data_2011_pt1 <- read.csv("lga_profiles_data_2011_pt1.csv")
 ```
 
 #### Exercise 1
 
 Create a choropleth map in Carto using the lga_profiles_data_2011_pt1 dataset covered in the Module 6 notes, but this time, look at a different variable that you find interesting. This will require you to sign-up for a Carto account if you haven’t already done so. Publish the map, add a title, and paste the link to the published plot in an RMarkdown report. Submit this link along with a solution to Exercise 2 below.
 
-```{r}
-# Code!!!
-```
+https://alistairgj.carto.com/builder/41a261c0-1601-456b-93f7-8ec569820676/embed
 
 #### Exercise 2
 
 Now recreate the choropleth map in Exercise 1 using ggplot2. Submit a knitted RMarkdown report to Canvas showing the link from Exercise 1 and the code and output from Exercise 2.
 
-```{r}
+```{r, warning=FALSE}
 # Example
-
-vic.lga.shp <- readShapeSpatial("data/vmlite_lga_cm/vmlite_lga_cm.shp")
-lga_profiles_data_2011_pt1 <- read.csv("data/lga_profiles_data_2011_pt1.csv")
+vic.lga.shp <- readShapeSpatial("vmlite_lga_cm.shp")
+lga_profiles_data_2011_pt1 <- read.csv("lga_profiles_data_2011_pt1.csv")
 lga.shp.f <- tidy(vic.lga.shp, region = "lga_name")
 lga.shp.f$lga_name <-lga.shp.f$id
 merge.lga.profiles<-merge(lga.shp.f, lga_profiles_data_2011_pt1, 
@@ -66,100 +45,18 @@ merge.lga.profiles<-merge(lga.shp.f, lga_profiles_data_2011_pt1,
 choro.data.frame<-merge.lga.profiles[order(merge.lga.profiles$order), ] 
 p1 <- ggplot(data = choro.data.frame,
              aes(x = long, y = lat, group = group, 
-                 fill = low_english_proficiency)) +
-  
-geom_polygon(color = "black", size = 0.25) + 
+                 fill = households_with_internet_connected)) +
+  geom_polygon(color = "black", size = 0.25) + 
   coord_map() +
-  scale_fill_distiller(name = "Proportion of Population",
+  scale_fill_distiller(name = "Fraction of Households",
                         guide = "legend",
-                    palette = "YlOrRd", direction = 1) +
+                    palette = "YlGnBu", direction = 1) +
   theme_nothing(legend = TRUE) +
-  labs(title="Proportion of LGA Self-identified as low in English Proficiency")
+  labs(title="Fraction of Households with Internet Connected")
 p1
 ```
 
-```{r}
-tail(Bicycle, n = 5)
-```
 
 ```{r}
-summary(Bicycle)
+colnames(lga_profiles_data_2011_pt1)
 ```
-
-```{r}
-# Check the column names
-colnames(Bicycle)
-```
-
-```{r}
-# Check how many UNIQUE locations there are ("DS_LOCATION")
-unique(Bicycle$DS_LOCATION)
-```
-
-```{r, include=TRUE}
-# The first plot
-ggplot(data = Bicycle, aes(x=NB_YEAR, y=CT_VOLUME_24HOUR, group=NB_YEAR)) +
-  geom_col() +
-    labs(title="Plot 1: Plot of 24 Hour Bike Volume vs Year", subtitle="Geom_col used for this Exploratory Analysis")
-```
-
-```{r}
-ggplot(data = Bicycle[Bicycle$DS_LOCATION == "(BIKE LANE)FLEMINGTON RD NW BD 10M SE OF DRYBURGH ST",], aes(x=NB_YEAR, y=CT_VOLUME_24HOUR, group=NB_YEAR)) +
-  geom_col() +
-    labs(title="Plot 1: Plot of 24 Hour Bike Volume vs Year", subtitle="Geom_col used for this Exploratory Analysis")
-```
-
-```{r}
-p2 <- ggplot(Bicycle, aes(x = CT_VOLUME_24HOUR)) 
-p2 + geom_histogram() + facet_wrap(~DS_LOCATION, scales = "free")
-```
-
-
-```{r}
-ggplot(data = Bicycle, aes(x = CT_VOLUME_24HOUR, y = NB_YEAR)) + 
-  geom_density_ridges(alpha = .8, color = "white")
-  
-  geom_density(position = "stack", adjust = 1/10)
-
-ggNew <- ggplot(data = censusVizNew, aes(x=Number, y=Engagement, fill = Gender))
-ggNew + geom_density_ridges(alpha = .8, color = "white") + 
-  coord_cartesian(xlim = c(0, 750000)) + 
-  theme_ridges(grid = FALSE) + 
-  labs(title="Distribution Plots", 
-       subtitle="City Mileage vs Class: Each dot represents 1 row in source data",
-       caption="Source: Census 2016",
-       x="Distribution",
-       y="Engagement")
-
-
-```
-
-
-In the case of the Plot 2, Cut 'Ideal' is associated with the greatest rise in price, as compared to the other cut values.
-
-```{r, include=TRUE}
-ggplot(data = Diamonds, aes(x=carat, y=price, colour=cut)) +
-  geom_point() +
-    labs(title="Plot 2: Scatter Plot of Price versus Carat", subtitle="Colour of points mapped by Cut") 
-```
-
-In the case of the Plot 3, Color 'D' is associated with the greatest rise in price, as compared to the other color values.
-
-```{r, include=TRUE}
-ggplot(data = Diamonds, aes(x=carat, y=price, colour=color)) +
-  geom_point() +
-    labs(title="Plot 3: Scatter Plot of Price versus Carat", subtitle="Colour of points mapped by Color") 
-```
-
-Overall, a diamond with clarity equal to IF, cut equal to Ideal and color equal to D would have the greatest value per unit of carat.
-
-
-
-
-
-
-
-
-
-
-

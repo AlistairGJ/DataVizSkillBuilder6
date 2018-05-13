@@ -1,12 +1,14 @@
 ---
 title: "MATH2270 Module 6"
-subtitle: "Skill Builder"
 author: "Alistair Grevis-James s3644119"
-output: html_notebook
+subtitle: Skill Builder
+output:
+  html_document:
+    df_print: paged
 ---
 
 #### Loading the Packages
-```{r Packages}
+```{r, message=FALSE, warning=FALSE}
 library(ggplot2) #Required
 library(dplyr) #Data wrangling
 library(tidyr) #Data wrangling
@@ -35,7 +37,6 @@ https://alistairgj.carto.com/builder/41a261c0-1601-456b-93f7-8ec569820676/embed
 Now recreate the choropleth map in Exercise 1 using ggplot2. Submit a knitted RMarkdown report to Canvas showing the link from Exercise 1 and the code and output from Exercise 2.
 
 ```{r, warning=FALSE}
-# Example
 vic.lga.shp <- readShapeSpatial("vmlite_lga_cm.shp")
 lga_profiles_data_2011_pt1 <- read.csv("lga_profiles_data_2011_pt1.csv")
 lga.shp.f <- tidy(vic.lga.shp, region = "lga_name")
